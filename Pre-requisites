@@ -1,0 +1,5 @@
+Prerequisites
+
+GitHub Repository: Ensure the Dockerfile is in a GitHub repository.
+Jenkins Server: Install Docker and set up the Jenkins user to use Docker.
+Amazon ECR Repository: Create an ECR repository to store the Docker image.
