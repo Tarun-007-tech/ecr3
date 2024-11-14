@@ -1,2 +1,2 @@
-From ubuntu:latest
+FROM ubuntu:latest
 CMD ["date"]
