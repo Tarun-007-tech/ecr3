@@ -1,0 +1,49 @@
+pipeline {
+    agent any
+    
+    environment {
+        ECR_REPOSITORY = 'your-ecr-repo-name'         // ECR repository name
+        AWS_REGION = 'us-east-1'                      // AWS region
+        DOCKER_IMAGE_TAG = "latest"                   // Tag for Docker image
+        GITHUB_REPO = 'https://github.com/username/repo.git'  // GitHub repo URL
+    }
+    
+    stages {
+        stage('Clone GitHub Repository') {
+            steps {
+                git branch: 'main', url: "${GITHUB_REPO}"
+            }
+        }
+        
+        stage('Login to Amazon ECR') {
+            steps {
+                script {
+                    sh """
+                    aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin $(aws sts get-caller-identity --query 'Account' --output text).dkr.ecr.${AWS_REGION}.amazonaws.com
+                    """
+                }
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    def imageTag = "${env.DOCKER_IMAGE_TAG}"
+                    sh "docker build -t ${ECR_REPOSITORY}:${imageTag} ."
+                }
+            }
+        }
+
+        stage('Tag and Push Docker Image to ECR') {
+            steps {
+                script {
+                    def accountId = sh(script: "aws sts get-caller-identity --query 'Account' --output text", returnStdout: true).trim()
+                    def ecrUri = "${accountId}.dkr.ecr.${AWS_REGION}.amazonaws.com/${ECR_REPOSITORY}:${DOCKER_IMAGE_TAG}"
+                    
+                    sh "docker tag ${ECR_REPOSITORY}:${DOCKER_IMAGE_TAG} ${ecrUri}"
+                    sh "docker push ${ecrUri}"
+                }
+            }
+        }
+    }
+}
