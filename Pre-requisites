@@ -12,3 +12,6 @@ Create an IAM role for your Jenkins Server (Ec2 Instance) through your AWS Accou
 5. Give the role-name and create role.
 6. Modify your Jenkins Server(EC2-Instance) and select the role which you created above.
 
+Tips
+1. Make sure you allow the inbound rules of your EC2-instance (Jenkins Server)
+
