@@ -3,3 +3,12 @@ Prerequisites
 GitHub Repository: Ensure the Dockerfile is in a GitHub repository.
 Jenkins Server: Install Docker and set up the Jenkins user to use Docker.
 Amazon ECR Repository: Create an ECR repository to store the Docker image.
+
+Create an IAM role for your Jenkins Server (Ec2 Instance) through your AWS Account
+1. Go to IAM 
+2. Create role
+3. Select the appropriate usecase in this case ec2.
+4. Add permissions - i.e AmazonEC2ContainerRegistryFullAccess and any other if needed
+5. Give the role-name and create role.
+6. Modify your Jenkins Server(EC2-Instance) and select the role which you created above.
+
